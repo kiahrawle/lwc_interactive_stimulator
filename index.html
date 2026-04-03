@@ -1,0 +1,1205 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --slds-blue: #0176d3;
+  --slds-blue-dark: #014486;
+  --slds-blue-light: #e8f4ff;
+  --slds-green: #2e844a;
+  --slds-green-light: #eaf5ea;
+  --slds-amber: #c47f17;
+  --slds-amber-light: #fdf5e0;
+  --slds-coral: #ea001e;
+  --slds-coral-light: #fef0f0;
+  --slds-purple: #7526e3;
+  --slds-purple-light: #f3eeff;
+  --slds-gray-1: #f3f3f3;
+  --slds-gray-2: #e5e5e5;
+  --slds-gray-3: #c9c9c9;
+  --slds-gray-5: #747474;
+  --slds-gray-8: #2b2b2b;
+}
+
+body {
+  font-family: 'Salesforce Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: 13px;
+  background: var(--color-background-tertiary, #f3f3f3);
+  color: var(--color-text-primary, #181818);
+  min-height: 100vh;
+}
+
+/* ─── TOP NAV ─── */
+.app-nav {
+  display: flex; align-items: center; gap: 0;
+  background: var(--slds-blue-dark);
+  padding: 0 16px; height: 48px;
+  position: sticky; top: 0; z-index: 100;
+}
+.nav-logo {
+  display: flex; align-items: center; gap: 8px;
+  color: #fff; font-weight: 600; font-size: 15px; letter-spacing: -.2px;
+}
+.nav-logo svg { flex-shrink: 0; }
+.nav-tabs { display: flex; gap: 2px; margin-left: 24px; }
+.nav-tab {
+  padding: 6px 14px; border-radius: 4px; color: rgba(255,255,255,.75);
+  cursor: pointer; font-size: 12px; font-weight: 500; transition: all .15s;
+  border: 1px solid transparent;
+}
+.nav-tab:hover { background: rgba(255,255,255,.12); color: #fff; }
+.nav-tab.active { background: rgba(255,255,255,.2); color: #fff; border-color: rgba(255,255,255,.3); }
+.nav-right { margin-left: auto; display: flex; align-items: center; gap: 8px; }
+.nav-avatar {
+  width: 28px; height: 28px; border-radius: 50%;
+  background: linear-gradient(135deg, #7526e3, #0176d3);
+  display: flex; align-items: center; justify-content: center;
+  color: #fff; font-size: 11px; font-weight: 600;
+}
+
+/* ─── LAYOUT ─── */
+.app-shell { display: grid; grid-template-columns: 220px 1fr; min-height: calc(100vh - 48px); }
+
+/* ─── SIDEBAR ─── */
+.sidebar {
+  background: var(--color-background-primary, #fff);
+  border-right: 1px solid var(--slds-gray-2);
+  overflow-y: auto; padding: 12px 0;
+}
+.sidebar-section-title {
+  font-size: 10px; font-weight: 600; letter-spacing: .8px; text-transform: uppercase;
+  color: var(--slds-gray-5); padding: 8px 16px 4px;
+}
+.sidebar-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 8px 16px; cursor: pointer; transition: background .12s;
+  color: var(--color-text-primary); font-size: 12.5px;
+  border-left: 3px solid transparent;
+}
+.sidebar-item:hover { background: var(--slds-gray-1); }
+.sidebar-item.active { border-left-color: var(--slds-blue); background: var(--slds-blue-light); color: var(--slds-blue); font-weight: 600; }
+.sidebar-icon { width: 16px; height: 16px; border-radius: 4px; flex-shrink: 0; }
+
+/* ─── MAIN CONTENT ─── */
+.main { overflow: hidden; display: flex; flex-direction: column; }
+
+/* ─── TABS ─── */
+.tab-bar {
+  display: flex; border-bottom: 1px solid var(--slds-gray-2);
+  background: var(--color-background-primary, #fff);
+  padding: 0 20px; gap: 0;
+}
+.tab-btn {
+  padding: 10px 16px; font-size: 12px; font-weight: 500; cursor: pointer;
+  color: var(--slds-gray-5); border-bottom: 2px solid transparent;
+  transition: all .15s; white-space: nowrap;
+}
+.tab-btn:hover { color: var(--slds-blue); }
+.tab-btn.active { color: var(--slds-blue); border-bottom-color: var(--slds-blue); }
+
+/* ─── SPLIT PANE ─── */
+.split-pane { display: grid; grid-template-columns: 1fr 1fr; flex: 1; overflow: hidden; }
+.pane { overflow-y: auto; }
+.pane-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 10px 16px; border-bottom: 1px solid var(--slds-gray-2);
+  background: var(--color-background-secondary, #f8f8f8);
+  font-size: 11px; font-weight: 600; letter-spacing: .5px; text-transform: uppercase;
+  color: var(--slds-gray-5); position: sticky; top: 0; z-index: 10;
+}
+.pane-header .pill {
+  font-size: 9px; padding: 2px 6px; border-radius: 99px; font-weight: 600;
+  background: var(--slds-blue); color: #fff; letter-spacing: .3px;
+}
+
+/* ─── CODE AREA ─── */
+.code-pane { background: #1a1e2a; border-right: 1px solid #2a2f3e; }
+.code-tabs { display: flex; gap: 0; border-bottom: 1px solid #2a2f3e; overflow-x: auto; }
+.code-tab {
+  padding: 7px 14px; font-size: 11px; cursor: pointer; color: #8892a8;
+  border-bottom: 2px solid transparent; white-space: nowrap; transition: all .15s;
+  font-family: 'SF Mono', 'Fira Code', monospace;
+}
+.code-tab:hover { color: #c5cdd8; }
+.code-tab.active { color: #7ec8e3; border-bottom-color: #7ec8e3; background: rgba(126,200,227,.06); }
+.code-body { padding: 12px 16px; overflow-x: auto; }
+.code-body pre {
+  font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
+  font-size: 11.5px; line-height: 1.7; color: #abb2bf;
+  tab-size: 2; white-space: pre;
+}
+.kw  { color: #c678dd; }
+.at  { color: #e06c75; }
+.fn  { color: #61afef; }
+.st  { color: #98c379; }
+.cm  { color: #5c6370; font-style: italic; }
+.nu  { color: #d19a66; }
+.tx  { color: #e5c07b; }
+.tg  { color: #e06c75; }
+.pr  { color: #56b6c2; }
+
+/* ─── PREVIEW PANE ─── */
+.preview-pane { background: var(--color-background-tertiary, #f3f3f3); }
+.preview-body { padding: 16px; }
+
+/* ─── LWC COMPONENT STYLES ─── */
+.lwc-card {
+  background: var(--color-background-primary, #fff);
+  border: 1px solid var(--slds-gray-2); border-radius: 6px;
+  box-shadow: 0 1px 3px rgba(0,0,0,.07); overflow: hidden; margin-bottom: 12px;
+}
+.lwc-card-header {
+  display: flex; align-items: center; gap: 8px;
+  padding: 10px 14px; border-bottom: 1px solid var(--slds-gray-2);
+  background: var(--color-background-secondary, #f8f8f8);
+}
+.lwc-card-title { font-weight: 600; font-size: 13px; }
+.lwc-card-subtitle { font-size: 11px; color: var(--slds-gray-5); margin-left: auto; }
+.lwc-card-body { padding: 14px; }
+
+/* Badge */
+.badge {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 2px 8px; border-radius: 99px; font-size: 10px; font-weight: 600;
+}
+.badge-blue { background: var(--slds-blue-light); color: var(--slds-blue); }
+.badge-green { background: var(--slds-green-light); color: var(--slds-green); }
+.badge-amber { background: var(--slds-amber-light); color: var(--slds-amber); }
+.badge-red { background: var(--slds-coral-light); color: var(--slds-coral); }
+.badge-purple { background: var(--slds-purple-light); color: var(--slds-purple); }
+
+/* Status dot */
+.dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.dot-green { background: var(--slds-green); }
+.dot-blue { background: var(--slds-blue); }
+.dot-amber { background: var(--slds-amber); }
+.dot-red { background: var(--slds-coral); }
+
+/* Record list */
+.record-row {
+  display: flex; align-items: center; padding: 8px 0; gap: 10px;
+  border-bottom: 1px solid var(--slds-gray-1); cursor: pointer; transition: background .1s;
+}
+.record-row:last-child { border-bottom: none; }
+.record-row:hover { background: var(--slds-blue-light); margin: 0 -14px; padding-left: 14px; padding-right: 14px; border-radius: 4px; }
+.record-avatar {
+  width: 30px; height: 30px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 700; flex-shrink: 0;
+}
+.record-name { font-weight: 600; font-size: 12px; line-height: 1.3; }
+.record-sub { font-size: 11px; color: var(--slds-gray-5); }
+.record-right { margin-left: auto; text-align: right; }
+.record-amount { font-weight: 600; font-size: 12px; }
+
+/* Stat grid */
+.stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px; }
+.stat-card {
+  background: var(--color-background-secondary, #f8f8f8);
+  border: 1px solid var(--slds-gray-2); border-radius: 6px; padding: 10px 12px;
+}
+.stat-label { font-size: 10px; color: var(--slds-gray-5); text-transform: uppercase; letter-spacing: .5px; margin-bottom: 4px; }
+.stat-value { font-size: 20px; font-weight: 600; line-height: 1; }
+.stat-change { font-size: 10px; margin-top: 3px; }
+.stat-up { color: var(--slds-green); }
+.stat-down { color: var(--slds-coral); }
+
+/* Form */
+.form-group { margin-bottom: 12px; }
+.form-label { font-size: 11px; font-weight: 600; color: var(--slds-gray-5); margin-bottom: 4px; display: block; }
+.form-input, .form-select {
+  width: 100%; padding: 7px 10px; border: 1px solid var(--slds-gray-3);
+  border-radius: 4px; font-size: 12px; background: var(--color-background-primary, #fff);
+  color: var(--color-text-primary); transition: border-color .15s, box-shadow .15s;
+  font-family: inherit;
+}
+.form-input:focus, .form-select:focus {
+  outline: none; border-color: var(--slds-blue);
+  box-shadow: 0 0 0 3px rgba(1,118,211,.15);
+}
+
+/* Buttons */
+.btn {
+  padding: 7px 16px; border-radius: 4px; font-size: 12px; font-weight: 600;
+  cursor: pointer; transition: all .15s; font-family: inherit; border: 1px solid;
+  display: inline-flex; align-items: center; gap: 6px;
+}
+.btn-primary { background: var(--slds-blue); color: #fff; border-color: var(--slds-blue-dark); }
+.btn-primary:hover { background: var(--slds-blue-dark); }
+.btn-secondary { background: #fff; color: var(--slds-blue); border-color: var(--slds-gray-3); }
+.btn-secondary:hover { background: var(--slds-blue-light); border-color: var(--slds-blue); }
+.btn-danger { background: #fff; color: var(--slds-coral); border-color: var(--slds-coral); }
+.btn-sm { padding: 4px 10px; font-size: 11px; }
+
+/* Wire indicator */
+.wire-badge {
+  display: inline-flex; align-items: center; gap: 4px;
+  background: var(--slds-purple-light); color: var(--slds-purple);
+  border: 1px solid rgba(117,38,227,.2); border-radius: 4px;
+  padding: 2px 7px; font-size: 9.5px; font-weight: 700; letter-spacing: .3px;
+}
+.wire-pulse {
+  width: 6px; height: 6px; border-radius: 50%; background: var(--slds-purple);
+  animation: pulse 1.8s ease-in-out infinite;
+}
+@keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.4;transform:scale(.7)} }
+
+/* Lifecycle badges */
+.lifecycle-bar {
+  display: flex; gap: 4px; flex-wrap: wrap; padding: 10px 14px;
+  border-top: 1px solid var(--slds-gray-1); background: var(--slds-gray-1);
+}
+.lc-step {
+  font-size: 9px; font-weight: 700; padding: 3px 7px; border-radius: 3px;
+  letter-spacing: .4px; opacity: .35; transition: opacity .4s;
+}
+.lc-step.fired { opacity: 1; }
+.lc-constructor { background: #e8d5ff; color: #5c00c7; }
+.lc-connected { background: var(--slds-blue-light); color: var(--slds-blue-dark); }
+.lc-rendercallback { background: var(--slds-green-light); color: var(--slds-green); }
+.lc-disconnected { background: var(--slds-coral-light); color: var(--slds-coral); }
+
+/* Event log */
+.event-log {
+  font-family: 'SF Mono', 'Fira Code', monospace; font-size: 10.5px;
+  background: #1a1e2a; color: #8892a8; padding: 10px 14px;
+  max-height: 110px; overflow-y: auto; border-radius: 0 0 5px 5px;
+  line-height: 1.6;
+}
+.log-line { display: flex; gap: 6px; }
+.log-time { color: #4e5568; }
+.log-wire { color: #c678dd; }
+.log-event { color: #e5c07b; }
+.log-render { color: #98c379; }
+.log-lifecycle { color: #61afef; }
+
+/* Alert box */
+.alert {
+  display: flex; align-items: flex-start; gap: 8px;
+  padding: 9px 12px; border-radius: 4px; font-size: 11.5px;
+  border: 1px solid; margin-bottom: 10px;
+}
+.alert-info { background: var(--slds-blue-light); border-color: rgba(1,118,211,.3); color: var(--slds-blue-dark); }
+
+/* Concept chip */
+.concept-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
+.concept-chip {
+  padding: 4px 10px; border-radius: 4px; font-size: 11px; font-weight: 600;
+  cursor: pointer; transition: all .15s; border: 1px solid var(--slds-gray-2);
+  background: var(--color-background-primary, #fff);
+}
+.concept-chip:hover { border-color: var(--slds-blue); color: var(--slds-blue); }
+.concept-chip.active { background: var(--slds-blue); color: #fff; border-color: var(--slds-blue-dark); }
+
+/* Progress bar */
+.progress-bar { height: 6px; background: var(--slds-gray-2); border-radius: 3px; overflow: hidden; }
+.progress-fill { height: 100%; border-radius: 3px; transition: width .5s ease; }
+
+/* Divider */
+.section-divider { border: none; border-top: 1px solid var(--slds-gray-2); margin: 12px 0; }
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--slds-gray-3); border-radius: 3px; }
+
+/* Responsive */
+@media (max-width: 900px) {
+  .app-shell { grid-template-columns: 1fr; }
+  .sidebar { display: none; }
+  .split-pane { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- ─── NAV ─── -->
+<nav class="app-nav">
+  <div class="nav-logo">
+    <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+      <rect width="22" height="22" rx="5" fill="rgba(255,255,255,.15)"/>
+      <path d="M11 4l7 4v6l-7 4-7-4V8z" fill="none" stroke="#fff" stroke-width="1.3"/>
+      <circle cx="11" cy="11" r="3" fill="#fff" opacity=".8"/>
+    </svg>
+    LWC Playground
+  </div>
+  <div class="nav-tabs">
+    <div class="nav-tab active">Components</div>
+    <div class="nav-tab">@wire Hooks</div>
+    <div class="nav-tab">Lifecycle</div>
+  </div>
+  <div class="nav-right">
+    <div style="font-size:11px;color:rgba(255,255,255,.6)">Salesforce Org · Developer Edition</div>
+    <div class="nav-avatar">AK</div>
+  </div>
+</nav>
+
+<!-- ─── SHELL ─── -->
+<div class="app-shell">
+
+  <!-- ─── SIDEBAR ─── -->
+  <aside class="sidebar">
+    <div class="sidebar-section-title">Components</div>
+    <div class="sidebar-item active" onclick="showSection('accounts')">
+      <div class="sidebar-icon" style="background:#0176d3;display:flex;align-items:center;justify-content:center">
+        <svg width="10" height="10" fill="#fff" viewBox="0 0 16 16"><path d="M8 8a3 3 0 100-6 3 3 0 000 6zm-5 6s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3z"/></svg>
+      </div>
+      accountList
+    </div>
+    <div class="sidebar-item" onclick="showSection('opportunities')">
+      <div class="sidebar-icon" style="background:#2e844a;display:flex;align-items:center;justify-content:center">
+        <svg width="10" height="10" fill="#fff" viewBox="0 0 16 16"><path d="M1 2a1 1 0 011-1h11a1 1 0 011 1v2.5l-7 4-7-4V2zm0 4.5l7 4 7-4V14a1 1 0 01-1 1H2a1 1 0 01-1-1V6.5z"/></svg>
+      </div>
+      opportunityTracker
+    </div>
+    <div class="sidebar-item" onclick="showSection('form')">
+      <div class="sidebar-icon" style="background:#7526e3;display:flex;align-items:center;justify-content:center">
+        <svg width="10" height="10" fill="#fff" viewBox="0 0 16 16"><path d="M14 1H2a1 1 0 00-1 1v12a1 1 0 001 1h12a1 1 0 001-1V2a1 1 0 00-1-1zM2 0h12a2 2 0 012 2v12a2 2 0 01-2 2H2a2 2 0 01-2-2V2a2 2 0 012-2z"/><path d="M8.5 9.5H5a.5.5 0 010-1h3.5a.5.5 0 010 1zm0-2H5a.5.5 0 010-1h3.5a.5.5 0 010 1zM5 12h1.5a.5.5 0 000-1H5a.5.5 0 000 1z"/></svg>
+      </div>
+      recordForm
+    </div>
+    <div class="sidebar-item" onclick="showSection('lifecycle')">
+      <div class="sidebar-icon" style="background:#c47f17;display:flex;align-items:center;justify-content:center">
+        <svg width="10" height="10" fill="#fff" viewBox="0 0 16 16"><path d="M8 4.754a3.246 3.246 0 100 6.492 3.246 3.246 0 000-6.492zM5.754 8a2.246 2.246 0 114.492 0 2.246 2.246 0 01-4.492 0z"/><path d="M9.796 1.343c-.527-1.79-3.065-1.79-3.592 0l-.094.319a.873.873 0 01-1.255.52l-.292-.16c-1.64-.892-3.433.902-2.54 2.541l.159.292a.873.873 0 01-.52 1.255l-.319.094c-1.79.527-1.79 3.065 0 3.592l.319.094a.873.873 0 01.52 1.255l-.16.292c-.892 1.64.901 3.434 2.541 2.54l.292-.159a.873.873 0 011.255.52l.094.319c.527 1.79 3.065 1.79 3.592 0l.094-.319a.873.873 0 011.255-.52l.292.16c1.64.893 3.434-.902 2.54-2.541l-.159-.292a.873.873 0 01.52-1.255l.319-.094c1.79-.527 1.79-3.065 0-3.592l-.319-.094a.873.873 0 01-.52-1.255l.16-.292c.893-1.64-.902-3.433-2.541-2.54l-.292.159a.873.873 0 01-1.255-.52l-.094-.319z"/></svg>
+      </div>
+      lifecycleDemo
+    </div>
+
+    <hr class="section-divider" style="margin:8px 16px">
+    <div class="sidebar-section-title">Wire Adapters</div>
+    <div class="sidebar-item" onclick="showSection('wire')">
+      <div class="sidebar-icon" style="background:#c678dd;display:flex;align-items:center;justify-content:center">
+        <svg width="10" height="10" fill="#fff" viewBox="0 0 16 16"><path d="M6 3.5A1.5 1.5 0 017.5 2h1A1.5 1.5 0 0110 3.5v1A1.5 1.5 0 018.5 6v1H14a.5.5 0 010 1H8.5v1a1.5 1.5 0 110 3h-1A1.5 1.5 0 016 10.5v-1H2.5a.5.5 0 010-1H6V7a1.5 1.5 0 01-1.5-1.5v-1A1.5 1.5 0 016 4.5v-1z"/></svg>
+      </div>
+      @wire Decorators
+    </div>
+
+    <hr class="section-divider" style="margin:8px 16px">
+    <div class="sidebar-section-title">Learn</div>
+    <div class="sidebar-item" onclick="sendPrompt('Explain the difference between @wire and imperative Apex calls in LWC')">
+      <div class="sidebar-icon" style="background:var(--slds-gray-3)"></div>
+      @wire vs Imperative ↗
+    </div>
+    <div class="sidebar-item" onclick="sendPrompt('Show me how LWC parent-child communication works with events')">
+      <div class="sidebar-icon" style="background:var(--slds-gray-3)"></div>
+      Event Bubbling ↗
+    </div>
+    <div class="sidebar-item" onclick="sendPrompt('How do I use Lightning Data Service in LWC?')">
+      <div class="sidebar-icon" style="background:var(--slds-gray-3)"></div>
+      LDS Adapters ↗
+    </div>
+  </aside>
+
+  <!-- ─── MAIN ─── -->
+  <main class="main">
+    <div class="tab-bar">
+      <div class="tab-btn active" onclick="setActiveTab(this,'preview')">Live Preview</div>
+      <div class="tab-btn" onclick="setActiveTab(this,'code')">Source Code</div>
+      <div class="tab-btn" onclick="setActiveTab(this,'tree')">Component Tree</div>
+    </div>
+
+    <div id="view-preview" class="split-pane" style="flex:1">
+      <!-- CODE HALF -->
+      <div class="pane code-pane" style="border-right:1px solid #2a2f3e">
+        <div class="pane-header" style="background:#1e2232;color:#8892a8;border-color:#2a2f3e">
+          <span>Source</span>
+          <span class="pill" style="background:#c678dd">LWC</span>
+        </div>
+        <div id="code-tabs" class="code-tabs"></div>
+        <div class="code-body" id="code-display"></div>
+      </div>
+
+      <!-- PREVIEW HALF -->
+      <div class="pane preview-pane">
+        <div class="pane-header">
+          <span>Rendered Output</span>
+          <div class="wire-badge" id="wire-status">
+            <div class="wire-pulse"></div>
+            @wire active
+          </div>
+        </div>
+        <div class="preview-body" id="preview-area"></div>
+      </div>
+    </div>
+
+    <!-- Code-only view (hidden) -->
+    <div id="view-code" style="display:none;flex:1;background:#1a1e2a;overflow:auto">
+      <div class="code-body" id="full-code-display" style="padding:20px"></div>
+    </div>
+
+    <!-- Tree view (hidden) -->
+    <div id="view-tree" style="display:none;flex:1;overflow:auto;padding:20px">
+      <div id="tree-display"></div>
+    </div>
+  </main>
+</div>
+
+<script>
+// ─── DATA ───
+const accounts = [
+  { id:'001', name:'Acme Corporation', industry:'Technology', revenue:4200000, stage:'Customer', contacts:14, color:'#0176d3' },
+  { id:'002', name:'Global Logistics Inc', industry:'Transportation', revenue:8750000, stage:'Prospect', contacts:7, color:'#2e844a' },
+  { id:'003', name:'Stellar Media Group', industry:'Media', revenue:2100000, stage:'Customer', contacts:22, color:'#7526e3' },
+  { id:'004', name:'Summit Healthcare', industry:'Healthcare', revenue:15300000, stage:'Partner', contacts:38, color:'#c47f17' },
+  { id:'005', name:'Pacific Ventures', industry:'Finance', revenue:6800000, stage:'Prospect', contacts:5, color:'#ea001e' },
+];
+
+const opportunities = [
+  { id:'opp1', name:'Enterprise License Deal', account:'Acme Corporation', amount:125000, stage:'Proposal', probability:65, close:'2024-03-15', color:'#0176d3' },
+  { id:'opp2', name:'Fleet Management Suite', account:'Global Logistics Inc', amount:89000, stage:'Negotiation', probability:80, close:'2024-02-28', color:'#2e844a' },
+  { id:'opp3', name:'CMS Platform Renewal', account:'Stellar Media Group', amount:42000, stage:'Closed Won', probability:100, close:'2024-01-31', color:'#7526e3' },
+  { id:'opp4', name:'EHR Integration Project', account:'Summit Healthcare', amount:310000, stage:'Discovery', probability:30, close:'2024-05-01', color:'#c47f17' },
+];
+
+const eventLog = [];
+let logCounter = 0;
+
+function addLog(type, msg) {
+  const now = new Date();
+  const t = `${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}:${now.getSeconds().toString().padStart(2,'0')}.${now.getMilliseconds().toString().padStart(3,'0')}`;
+  eventLog.unshift({ t, type, msg });
+  if (eventLog.length > 20) eventLog.pop();
+  updateLog();
+}
+
+function updateLog() {
+  const el = document.getElementById('event-log');
+  if (!el) return;
+  el.innerHTML = eventLog.slice(0,8).map(e => {
+    const cls = e.type === 'wire' ? 'log-wire' : e.type === 'event' ? 'log-event' : e.type === 'render' ? 'log-render' : 'log-lifecycle';
+    return `<div class="log-line"><span class="log-time">${e.t}</span><span class="${cls}">[${e.type}]</span><span>${e.msg}</span></div>`;
+  }).join('');
+}
+
+// ─── SECTIONS ───
+const sections = {
+  accounts: { label: 'accountList', tabs: ['accountList.html','accountList.js','accountList.css'] },
+  opportunities: { label: 'opportunityTracker', tabs: ['opportunityTracker.html','opportunityTracker.js'] },
+  form: { label: 'recordForm', tabs: ['recordForm.html','recordForm.js'] },
+  lifecycle: { label: 'lifecycleDemo', tabs: ['lifecycleDemo.html','lifecycleDemo.js'] },
+  wire: { label: '@wire Decorators', tabs: ['wireAdapters.js','accountWire.html'] },
+};
+
+let currentSection = 'accounts';
+let currentCodeTab = 0;
+let selectedAccountId = '001';
+
+function showSection(name) {
+  currentSection = name;
+  currentCodeTab = 0;
+  document.querySelectorAll('.sidebar-item').forEach(el => el.classList.remove('active'));
+  event.currentTarget.classList.add('active');
+  renderAll();
+}
+
+function setActiveTab(btn, view) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('view-preview').style.display = view === 'preview' ? 'grid' : 'none';
+  document.getElementById('view-code').style.display = view === 'code' ? 'block' : 'none';
+  document.getElementById('view-tree').style.display = view === 'tree' ? 'block' : 'none';
+  if (view === 'tree') renderTree();
+  if (view === 'code') renderFullCode();
+}
+
+// ─── CODE CONTENT ───
+const codeContent = {
+  'accountList.html': `<span class="cm">&lt;!-- accountList.html --&gt;</span>
+<span class="tg">&lt;template&gt;</span>
+  <span class="tg">&lt;div</span> <span class="at">class</span>=<span class="st">"container"</span><span class="tg">&gt;</span>
+
+    <span class="cm">&lt;!-- @wire fetches accounts reactively --&gt;</span>
+    <span class="tg">&lt;template</span> <span class="at">if:true</span>=<span class="st">{accounts.data}</span><span class="tg">&gt;</span>
+      <span class="tg">&lt;template</span> <span class="at">for:each</span>=<span class="st">{accounts.data.records}</span>
+                  <span class="at">for:item</span>=<span class="st">"acc"</span><span class="tg">&gt;</span>
+        <span class="tg">&lt;c-account-row</span>
+          <span class="at">key</span>=<span class="st">{acc.Id}</span>
+          <span class="at">record</span>=<span class="st">{acc}</span>
+          <span class="at">onselect</span>=<span class="st">{handleSelect}</span>
+        <span class="tg">&gt;&lt;/c-account-row&gt;</span>
+      <span class="tg">&lt;/template&gt;</span>
+    <span class="tg">&lt;/template&gt;</span>
+
+    <span class="tg">&lt;template</span> <span class="at">if:true</span>=<span class="st">{accounts.error}</span><span class="tg">&gt;</span>
+      <span class="tg">&lt;c-error-panel</span> <span class="at">errors</span>=<span class="st">{accounts.error}</span><span class="tg">&gt;&lt;/c-error-panel&gt;</span>
+    <span class="tg">&lt;/template&gt;</span>
+
+  <span class="tg">&lt;/div&gt;</span>
+<span class="tg">&lt;/template&gt;</span>`,
+
+  'accountList.js': `<span class="cm">// accountList.js</span>
+<span class="kw">import</span> { LightningElement, wire, track } <span class="kw">from</span> <span class="st">'lwc'</span>;
+<span class="kw">import</span> { getListUi } <span class="kw">from</span> <span class="st">'lightning/uiListApi'</span>;
+<span class="kw">import</span> ACCOUNT_OBJECT <span class="kw">from</span> <span class="st">'@salesforce/schema/Account'</span>;
+<span class="kw">import</span> getAccounts <span class="kw">from</span> <span class="st">'@salesforce/apex/AccountController.getAccounts'</span>;
+
+<span class="kw">export default class</span> <span class="fn">AccountList</span> <span class="kw">extends</span> <span class="fn">LightningElement</span> {
+
+  <span class="at">@track</span> selectedId;
+  <span class="at">@track</span> filter = <span class="st">''</span>;
+
+  <span class="cm">// @wire — reactive Apex call</span>
+  <span class="cm">// Re-executes when this.filter changes</span>
+  <span class="at">@wire</span>(<span class="fn">getAccounts</span>, { filter: <span class="st">'$filter'</span> })
+  accounts;
+
+  <span class="cm">// @wire with LDS (Lightning Data Service)</span>
+  <span class="at">@wire</span>(<span class="fn">getListUi</span>, {
+    objectApiName: ACCOUNT_OBJECT,
+    listViewApiName: <span class="st">'AllAccounts'</span>
+  })
+  listView;
+
+  <span class="fn">handleSelect</span>(event) {
+    <span class="kw">this</span>.selectedId = event.detail.id;
+    <span class="kw">this</span>.dispatchEvent(
+      <span class="kw">new</span> <span class="fn">CustomEvent</span>(<span class="st">'accountselect'</span>, {
+        detail: { id: <span class="kw">this</span>.selectedId },
+        bubbles: <span class="kw">true</span>, composed: <span class="kw">true</span>
+      })
+    );
+  }
+
+  <span class="fn">handleFilterChange</span>(event) {
+    <span class="cm">// Updating @track property triggers @wire re-fetch</span>
+    <span class="kw">this</span>.filter = event.target.value;
+  }
+}`,
+
+  'accountList.css': `.container {
+  padding: var(--lwc-spacingMedium, 12px);
+  background: var(--lwc-colorBackground);
+}
+
+/* SLDS token-based styling */
+.account-row {
+  display: flex;
+  align-items: center;
+  padding: var(--lwc-spacingSmall, 8px);
+  border-radius: var(--lwc-borderRadiusMedium, 4px);
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.account-row:hover {
+  background: var(--lwc-colorBackgroundHighlight);
+}
+
+.account-name {
+  font-weight: var(--lwc-fontWeightBold, 700);
+  color: var(--lwc-colorTextDefault);
+}`,
+
+  'opportunityTracker.html': `<span class="tg">&lt;template&gt;</span>
+  <span class="tg">&lt;lightning-card</span>
+    <span class="at">title</span>=<span class="st">"Pipeline"</span>
+    <span class="at">icon-name</span>=<span class="st">"standard:opportunity"</span><span class="tg">&gt;</span>
+
+    <span class="tg">&lt;div</span> <span class="at">slot</span>=<span class="st">"actions"</span><span class="tg">&gt;</span>
+      <span class="tg">&lt;lightning-button-group&gt;</span>
+        <span class="tg">&lt;lightning-button</span> <span class="at">label</span>=<span class="st">"New"</span> <span class="at">onclick</span>=<span class="st">{openModal}</span><span class="tg">/&gt;</span>
+        <span class="tg">&lt;lightning-button</span> <span class="at">label</span>=<span class="st">"Refresh"</span> <span class="at">onclick</span>=<span class="st">{refreshData}</span><span class="tg">/&gt;</span>
+      <span class="tg">&lt;/lightning-button-group&gt;</span>
+    <span class="tg">&lt;/div&gt;</span>
+
+    <span class="tg">&lt;template</span> <span class="at">if:true</span>=<span class="st">{isLoading}</span><span class="tg">&gt;</span>
+      <span class="tg">&lt;lightning-spinner</span> <span class="at">size</span>=<span class="st">"small"</span><span class="tg">/&gt;</span>
+    <span class="tg">&lt;/template&gt;</span>
+
+    <span class="tg">&lt;template</span> <span class="at">for:each</span>=<span class="st">{opportunities}</span> <span class="at">for:item</span>=<span class="st">"opp"</span><span class="tg">&gt;</span>
+      <span class="tg">&lt;div</span> <span class="at">key</span>=<span class="st">{opp.Id}</span> <span class="at">class</span>=<span class="st">"opp-row"</span><span class="tg">&gt;</span>
+        <span class="tg">&lt;span&gt;</span>{opp.Name}<span class="tg">&lt;/span&gt;</span>
+        <span class="tg">&lt;span&gt;</span>{opp.Amount}<span class="tg">&lt;/span&gt;</span>
+      <span class="tg">&lt;/div&gt;</span>
+    <span class="tg">&lt;/template&gt;</span>
+
+  <span class="tg">&lt;/lightning-card&gt;</span>
+<span class="tg">&lt;/template&gt;</span>`,
+
+  'opportunityTracker.js': `<span class="kw">import</span> { LightningElement, wire, track } <span class="kw">from</span> <span class="st">'lwc'</span>;
+<span class="kw">import</span> { refreshApex } <span class="kw">from</span> <span class="st">'@salesforce/apex'</span>;
+<span class="kw">import</span> getOpportunities <span class="kw">from</span> <span class="st">'@salesforce/apex/OppController.getOpportunities'</span>;
+<span class="kw">import</span> { ShowToastEvent } <span class="kw">from</span> <span class="st">'lightning/platformShowToastEvent'</span>;
+
+<span class="kw">export default class</span> <span class="fn">OpportunityTracker</span> <span class="kw">extends</span> <span class="fn">LightningElement</span> {
+
+  <span class="at">@track</span> isLoading = <span class="kw">false</span>;
+  wiredOppsResult; <span class="cm">// store wire result for refresh</span>
+
+  <span class="at">@wire</span>(<span class="fn">getOpportunities</span>)
+  <span class="fn">wiredOpps</span>(result) {
+    <span class="kw">this</span>.wiredOppsResult = result;
+    <span class="kw">if</span> (result.data) {
+      <span class="kw">this</span>.opportunities = result.data;
+    }
+  }
+
+  <span class="cm">// Imperative refresh after DML</span>
+  async <span class="fn">refreshData</span>() {
+    <span class="kw">this</span>.isLoading = <span class="kw">true</span>;
+    <span class="kw">await</span> <span class="fn">refreshApex</span>(<span class="kw">this</span>.wiredOppsResult);
+    <span class="kw">this</span>.isLoading = <span class="kw">false</span>;
+    <span class="kw">this</span>.dispatchEvent(<span class="kw">new</span> <span class="fn">ShowToastEvent</span>({
+      title: <span class="st">'Refreshed'</span>,
+      message: <span class="st">'Pipeline data updated'</span>,
+      variant: <span class="st">'success'</span>
+    }));
+  }
+}`,
+
+  'recordForm.html': `<span class="tg">&lt;template&gt;</span>
+  <span class="cm">&lt;!-- lightning-record-form uses LDS --&gt;</span>
+  <span class="tg">&lt;lightning-record-form</span>
+    <span class="at">record-id</span>=<span class="st">{recordId}</span>
+    <span class="at">object-api-name</span>=<span class="st">"Account"</span>
+    <span class="at">fields</span>=<span class="st">{accountFields}</span>
+    <span class="at">mode</span>=<span class="st">"view"</span>
+    <span class="at">onsuccess</span>=<span class="st">{handleSuccess}</span>
+    <span class="at">onerror</span>=<span class="st">{handleError}</span>
+  <span class="tg">/&gt;</span>
+<span class="tg">&lt;/template&gt;</span>`,
+
+  'recordForm.js': `<span class="kw">import</span> { LightningElement, api, wire } <span class="kw">from</span> <span class="st">'lwc'</span>;
+<span class="kw">import</span> { getRecord, updateRecord } <span class="kw">from</span> <span class="st">'lightning/uiRecordApi'</span>;
+<span class="kw">import</span> NAME_FIELD <span class="kw">from</span> <span class="st">'@salesforce/schema/Account.Name'</span>;
+<span class="kw">import</span> PHONE_FIELD <span class="kw">from</span> <span class="st">'@salesforce/schema/Account.Phone'</span>;
+<span class="kw">import</span> INDUSTRY_FIELD <span class="kw">from</span> <span class="st">'@salesforce/schema/Account.Industry'</span>;
+
+<span class="kw">export default class</span> <span class="fn">RecordForm</span> <span class="kw">extends</span> <span class="fn">LightningElement</span> {
+
+  <span class="at">@api</span> recordId; <span class="cm">// Public prop — passed by parent</span>
+
+  accountFields = [NAME_FIELD, PHONE_FIELD, INDUSTRY_FIELD];
+
+  <span class="cm">// LDS wire — auto-updates when record changes</span>
+  <span class="at">@wire</span>(<span class="fn">getRecord</span>, { recordId: <span class="st">'$recordId'</span>, fields: <span class="st">'$accountFields'</span> })
+  account;
+
+  <span class="kw">get</span> <span class="fn">accountName</span>() {
+    <span class="kw">return</span> <span class="kw">this</span>.account?.data?.fields?.Name?.value;
+  }
+
+  async <span class="fn">handleSave</span>(event) {
+    <span class="kw">const</span> fields = event.detail.fields;
+    <span class="kw">await</span> <span class="fn">updateRecord</span>({ recordId: <span class="kw">this</span>.recordId, fields });
+  }
+}`,
+
+  'lifecycleDemo.html': `<span class="tg">&lt;template&gt;</span>
+  <span class="tg">&lt;div&gt;</span>
+    <span class="tg">&lt;p&gt;</span>Mounted: {mountCount} times<span class="tg">&lt;/p&gt;</span>
+    <span class="tg">&lt;p&gt;</span>Rendered: {renderCount} times<span class="tg">&lt;/p&gt;</span>
+  <span class="tg">&lt;/div&gt;</span>
+<span class="tg">&lt;/template&gt;</span>`,
+
+  'lifecycleDemo.js': `<span class="kw">import</span> { LightningElement, track } <span class="kw">from</span> <span class="st">'lwc'</span>;
+
+<span class="kw">export default class</span> <span class="fn">LifecycleDemo</span> <span class="kw">extends</span> <span class="fn">LightningElement</span> {
+
+  <span class="at">@track</span> mountCount = <span class="nu">0</span>;
+  <span class="at">@track</span> renderCount = <span class="nu">0</span>;
+
+  <span class="cm">// 1. Constructor — before component is in DOM</span>
+  <span class="fn">constructor</span>() {
+    <span class="kw">super</span>();
+    console.<span class="fn">log</span>(<span class="st">'constructor()'</span>);
+  }
+
+  <span class="cm">// 2. connectedCallback — component added to DOM</span>
+  <span class="fn">connectedCallback</span>() {
+    <span class="kw">this</span>.mountCount++;
+    console.<span class="fn">log</span>(<span class="st">'connectedCallback()'</span>);
+    <span class="cm">// Good place for event listeners, data fetching</span>
+  }
+
+  <span class="cm">// 3. renderedCallback — after every render</span>
+  <span class="fn">renderedCallback</span>() {
+    <span class="kw">this</span>.renderCount++;
+    <span class="cm">// DOM is ready — safe to query elements</span>
+    <span class="kw">const</span> el = <span class="kw">this</span>.template.<span class="fn">querySelector</span>(<span class="st">'div'</span>);
+  }
+
+  <span class="cm">// 4. disconnectedCallback — removed from DOM</span>
+  <span class="fn">disconnectedCallback</span>() {
+    console.<span class="fn">log</span>(<span class="st">'disconnectedCallback()'</span>);
+    <span class="cm">// Clean up listeners here</span>
+  }
+
+  <span class="cm">// 5. errorCallback — catches child errors</span>
+  <span class="fn">errorCallback</span>(error, stack) {
+    console.<span class="fn">error</span>(<span class="st">'Child error:'</span>, error);
+  }
+}`,
+
+  'wireAdapters.js': `<span class="kw">import</span> { LightningElement, wire } <span class="kw">from</span> <span class="st">'lwc'</span>;
+
+<span class="cm">// ── Import wire adapters ──────────────────────────────</span>
+<span class="kw">import</span> { getRecord }      <span class="kw">from</span> <span class="st">'lightning/uiRecordApi'</span>;
+<span class="kw">import</span> { getObjectInfo }  <span class="kw">from</span> <span class="st">'lightning/uiObjectInfoApi'</span>;
+<span class="kw">import</span> { getPicklistValues } <span class="kw">from</span> <span class="st">'lightning/uiObjectInfoApi'</span>;
+<span class="kw">import</span> myApexMethod       <span class="kw">from</span> <span class="st">'@salesforce/apex/MyClass.myMethod'</span>;
+<span class="kw">import</span> ACCOUNT_OBJECT     <span class="kw">from</span> <span class="st">'@salesforce/schema/Account'</span>;
+<span class="kw">import</span> STAGE_FIELD        <span class="kw">from</span> <span class="st">'@salesforce/schema/Opportunity.StageName'</span>;
+
+<span class="kw">export default class</span> <span class="fn">WireAdapters</span> <span class="kw">extends</span> <span class="fn">LightningElement</span> {
+
+  <span class="cm">// 1️⃣  getRecord — LDS auto-refresh, FLS-aware</span>
+  <span class="at">@wire</span>(<span class="fn">getRecord</span>, {
+    recordId: <span class="st">'$recordId'</span>,         <span class="cm">// '$' = reactive property</span>
+    fields: [<span class="st">'Account.Name'</span>, <span class="st">'Account.Industry'</span>]
+  }) account;
+
+  <span class="cm">// 2️⃣  Apex @wire — cacheable Apex method</span>
+  <span class="at">@wire</span>(<span class="fn">myApexMethod</span>, { param: <span class="st">'$filterValue'</span> })
+  <span class="fn">wiredData</span>({ data, error }) {
+    <span class="kw">if</span> (data)  { <span class="kw">this</span>.records = data; }
+    <span class="kw">if</span> (error) { <span class="kw">this</span>.handleError(error); }
+  }
+
+  <span class="cm">// 3️⃣  getObjectInfo — schema metadata</span>
+  <span class="at">@wire</span>(<span class="fn">getObjectInfo</span>, { objectApiName: ACCOUNT_OBJECT })
+  objectInfo;
+
+  <span class="cm">// 4️⃣  getPicklistValues — dynamic picklists</span>
+  <span class="at">@wire</span>(<span class="fn">getPicklistValues</span>, {
+    recordTypeId: <span class="st">'$objectInfo.data.defaultRecordTypeId'</span>,
+    fieldApiName: STAGE_FIELD
+  }) stagePicklist;
+}`,
+
+  'accountWire.html': `<span class="tg">&lt;template&gt;</span>
+
+  <span class="cm">&lt;!-- Wire result shape: { data, error } --&gt;</span>
+  <span class="tg">&lt;template</span> <span class="at">if:true</span>=<span class="st">{account.data}</span><span class="tg">&gt;</span>
+    <span class="tg">&lt;p&gt;</span>
+      Name: {account.data.fields.Name.value}
+    <span class="tg">&lt;/p&gt;</span>
+    <span class="tg">&lt;p&gt;</span>
+      Industry: {account.data.fields.Industry.value}
+    <span class="tg">&lt;/p&gt;</span>
+  <span class="tg">&lt;/template&gt;</span>
+
+  <span class="tg">&lt;template</span> <span class="at">if:true</span>=<span class="st">{account.error}</span><span class="tg">&gt;</span>
+    <span class="tg">&lt;p</span> <span class="at">class</span>=<span class="st">"error"</span><span class="tg">&gt;</span>
+      {account.error.body.message}
+    <span class="tg">&lt;/p&gt;</span>
+  <span class="tg">&lt;/template&gt;</span>
+
+  <span class="tg">&lt;template</span> <span class="at">if:false</span>=<span class="st">{hasResult}</span><span class="tg">&gt;</span>
+    <span class="tg">&lt;lightning-spinner</span> <span class="at">size</span>=<span class="st">"small"</span><span class="tg">/&gt;</span>
+  <span class="tg">&lt;/template&gt;</span>
+
+<span class="tg">&lt;/template&gt;</span>`,
+};
+
+// ─── PREVIEW RENDERERS ───
+function renderAccounts() {
+  const account = accounts.find(a => a.id === selectedAccountId) || accounts[0];
+  return `
+<div class="alert alert-info" style="margin-bottom:12px">
+  <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor" style="flex-shrink:0;margin-top:1px"><path d="M8 16A8 8 0 108 0a8 8 0 000 16zm.93-9.412l-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 110-2 1 1 0 010 2z"/></svg>
+  <span><strong>@wire(getAccounts)</strong> fetches reactively. Click a record to fire a <code>CustomEvent</code> and watch the event log.</span>
+</div>
+
+<div class="stat-grid">
+  <div class="stat-card">
+    <div class="stat-label">Total Accounts</div>
+    <div class="stat-value" style="color:var(--slds-blue)">${accounts.length}</div>
+    <div class="stat-change stat-up">↑ 2 this month</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label">Total Revenue</div>
+    <div class="stat-value" style="color:var(--slds-green)">$${(accounts.reduce((s,a)=>s+a.revenue,0)/1e6).toFixed(1)}M</div>
+    <div class="stat-change stat-up">↑ 8.3%</div>
+  </div>
+</div>
+
+<div class="lwc-card">
+  <div class="lwc-card-header">
+    <div class="dot dot-blue"></div>
+    <span class="lwc-card-title">c-account-list</span>
+    <span class="wire-badge" style="margin-left:6px"><div class="wire-pulse"></div>@wire(getAccounts)</span>
+    <span class="lwc-card-subtitle">${accounts.length} records</span>
+  </div>
+  <div class="lwc-card-body">
+    ${accounts.map(a => `
+    <div class="record-row" onclick="selectAccount('${a.id}',this)">
+      <div class="record-avatar" style="background:${a.color}22;color:${a.color}">${a.name.split(' ').map(w=>w[0]).join('').slice(0,2)}</div>
+      <div>
+        <div class="record-name" style="color:${selectedAccountId===a.id?'var(--slds-blue)':'inherit'}">${a.name}</div>
+        <div class="record-sub">${a.industry} · ${a.contacts} contacts</div>
+      </div>
+      <div class="record-right">
+        <div class="badge ${a.stage==='Customer'?'badge-green':a.stage==='Partner'?'badge-purple':'badge-amber'}">${a.stage}</div>
+        <div class="record-sub" style="margin-top:2px">$${(a.revenue/1e6).toFixed(1)}M</div>
+      </div>
+    </div>`).join('')}
+  </div>
+</div>
+
+<div id="event-log" class="event-log">
+  <div class="log-line"><span class="log-time">—</span><span class="log-render">[render]</span><span>c-account-list connected to DOM</span></div>
+  <div class="log-line"><span class="log-time">—</span><span class="log-wire">[wire]</span><span>@wire(getAccounts) resolved → ${accounts.length} records</span></div>
+</div>`;
+}
+
+function renderOpportunities() {
+  const totalPipeline = opportunities.filter(o=>o.stage!=='Closed Won').reduce((s,o)=>s+o.amount,0);
+  const closed = opportunities.filter(o=>o.stage==='Closed Won').reduce((s,o)=>s+o.amount,0);
+  return `
+<div class="stat-grid">
+  <div class="stat-card">
+    <div class="stat-label">Open Pipeline</div>
+    <div class="stat-value" style="color:var(--slds-blue)">$${(totalPipeline/1000).toFixed(0)}K</div>
+    <div class="stat-change stat-up">↑ 12%</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label">Closed Won</div>
+    <div class="stat-value" style="color:var(--slds-green)">$${(closed/1000).toFixed(0)}K</div>
+    <div class="stat-change stat-up">↑ 3%</div>
+  </div>
+</div>
+
+<div class="lwc-card">
+  <div class="lwc-card-header">
+    <div class="dot dot-green"></div>
+    <span class="lwc-card-title">c-opportunity-tracker</span>
+    <span class="wire-badge" style="margin-left:6px"><div class="wire-pulse"></div>@wire(getOpps)</span>
+    <button class="btn btn-secondary btn-sm" onclick="simulateRefresh()">↺ Refresh</button>
+  </div>
+  <div class="lwc-card-body">
+    ${opportunities.map(o => {
+      const stageColor = o.stage==='Closed Won'?'badge-green':o.stage==='Negotiation'?'badge-blue':o.stage==='Proposal'?'badge-purple':'badge-amber';
+      return `
+    <div class="record-row" onclick="addLog('event','CustomEvent(opportunityselect) bubbled — id: ${o.id}')">
+      <div class="record-avatar" style="background:${o.color}22;color:${o.color}">${o.account.split(' ').map(w=>w[0]).join('').slice(0,2)}</div>
+      <div style="flex:1">
+        <div class="record-name">${o.name}</div>
+        <div class="record-sub">${o.account}</div>
+        <div class="progress-bar" style="margin-top:5px;width:100%">
+          <div class="progress-fill" style="width:${o.probability}%;background:${o.color}"></div>
+        </div>
+        <div class="record-sub" style="margin-top:2px">${o.probability}% probability · Close ${o.close}</div>
+      </div>
+      <div class="record-right" style="margin-left:12px">
+        <div class="badge ${stageColor}">${o.stage}</div>
+        <div class="record-amount" style="margin-top:4px;color:var(--slds-blue)">$${o.amount.toLocaleString()}</div>
+      </div>
+    </div>`;}).join('')}
+  </div>
+</div>
+<div id="event-log" class="event-log">
+  <div class="log-line"><span class="log-wire">[wire]</span><span>@wire(getOpportunities) → ${opportunities.length} records</span></div>
+</div>`;
+}
+
+function renderForm() {
+  const account = accounts.find(a=>a.id===selectedAccountId)||accounts[0];
+  return `
+<div class="alert alert-info">
+  <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor" style="flex-shrink:0;margin-top:1px"><path d="M8 16A8 8 0 108 0a8 8 0 000 16zm.93-9.412l-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 110-2 1 1 0 010 2z"/></svg>
+  <span><strong>lightning-record-form</strong> uses LDS — handles CRUD, FLS, sharing, and validation automatically.</span>
+</div>
+
+<div class="lwc-card">
+  <div class="lwc-card-header">
+    <div class="dot dot-blue" style="background:var(--slds-purple)"></div>
+    <span class="lwc-card-title">c-record-form · <code style="font-size:10px">${account.id}</code></span>
+    <span class="wire-badge" style="margin-left:6px"><div class="wire-pulse"></div>@api recordId</span>
+  </div>
+  <div class="lwc-card-body">
+    <div class="form-group">
+      <label class="form-label">Account Name</label>
+      <input class="form-input" value="${account.name}" oninput="addLog('event','renderedCallback() — DOM updated')">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Industry</label>
+      <select class="form-select" onchange="addLog('wire','@wire(getRecord) re-evaluated — field changed')">
+        <option ${account.industry==='Technology'?'selected':''}>Technology</option>
+        <option ${account.industry==='Transportation'?'selected':''}>Transportation</option>
+        <option ${account.industry==='Media'?'selected':''}>Media</option>
+        <option ${account.industry==='Healthcare'?'selected':''}>Healthcare</option>
+        <option ${account.industry==='Finance'?'selected':''}>Finance</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Stage</label>
+      <select class="form-select">
+        <option ${account.stage==='Customer'?'selected':''}>Customer</option>
+        <option ${account.stage==='Prospect'?'selected':''}>Prospect</option>
+        <option ${account.stage==='Partner'?'selected':''}>Partner</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Annual Revenue</label>
+      <input class="form-input" type="number" value="${account.revenue}" oninput="addLog('render','@track property changed → re-render queued')">
+    </div>
+    <div style="display:flex;gap:8px;margin-top:4px">
+      <button class="btn btn-primary" onclick="simulateSave()">Save</button>
+      <button class="btn btn-secondary" onclick="addLog('lifecycle','connectedCallback() → form reset')">Cancel</button>
+      <button class="btn btn-danger btn-sm" style="margin-left:auto" onclick="addLog('event','CustomEvent(delete) dispatched')">Delete</button>
+    </div>
+  </div>
+</div>
+<div id="event-log" class="event-log">
+  <div class="log-line"><span class="log-wire">[wire]</span><span>@wire(getRecord, { recordId: '${account.id}' }) resolved</span></div>
+</div>`;
+}
+
+function renderLifecycle() {
+  return `
+<div class="lwc-card">
+  <div class="lwc-card-header">
+    <div class="dot dot-amber"></div>
+    <span class="lwc-card-title">c-lifecycle-demo</span>
+    <span class="lwc-card-subtitle">Hook sequence</span>
+  </div>
+  <div class="lwc-card-body">
+    <div class="concept-chips">
+      <div class="concept-chip active" onclick="fireLifecycle('constructor')">constructor()</div>
+      <div class="concept-chip" onclick="fireLifecycle('connected')">connectedCallback()</div>
+      <div class="concept-chip" onclick="fireLifecycle('rendered')">renderedCallback()</div>
+      <div class="concept-chip" onclick="fireLifecycle('disconnected')">disconnectedCallback()</div>
+      <div class="concept-chip" onclick="fireLifecycle('error')">errorCallback()</div>
+    </div>
+
+    <div class="lifecycle-bar" id="lifecycle-bar">
+      <div class="lc-step lc-constructor fired" id="lc-constructor">CONSTRUCTOR</div>
+      <div style="color:var(--slds-gray-5);font-size:11px;display:flex;align-items:center">→</div>
+      <div class="lc-step lc-connected" id="lc-connected">CONNECTED</div>
+      <div style="color:var(--slds-gray-5);font-size:11px;display:flex;align-items:center">→</div>
+      <div class="lc-step lc-rendercallback" id="lc-rendercallback">RENDERED</div>
+      <div style="color:var(--slds-gray-5);font-size:11px;display:flex;align-items:center">→</div>
+      <div class="lc-step lc-disconnected" id="lc-disconnected">DISCONNECTED</div>
+    </div>
+
+    <div style="padding:14px;background:var(--color-background-secondary);border-radius:4px;margin-top:12px;font-size:12px">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+        <div><span style="color:var(--slds-gray-5)">Constructor called:</span> <strong id="lc-count-constructor">1</strong></div>
+        <div><span style="color:var(--slds-gray-5)">Connected:</span> <strong id="lc-count-connected">1</strong></div>
+        <div><span style="color:var(--slds-gray-5)">Rendered:</span> <strong id="lc-count-rendered">2</strong></div>
+        <div><span style="color:var(--slds-gray-5)">Disconnected:</span> <strong id="lc-count-disconnected">0</strong></div>
+      </div>
+    </div>
+
+    <button class="btn btn-primary" style="margin-top:12px;width:100%" onclick="remountComponent()">Remount Component</button>
+  </div>
+</div>
+
+<div id="event-log" class="event-log">
+  <div class="log-line"><span class="log-lifecycle">[lifecycle]</span><span>constructor() — super() called, no DOM access yet</span></div>
+  <div class="log-line"><span class="log-lifecycle">[lifecycle]</span><span>connectedCallback() — component in DOM, @wire resolves</span></div>
+  <div class="log-line"><span class="log-render">[render]</span><span>renderedCallback() — DOM painted, template queries safe</span></div>
+</div>`;
+}
+
+function renderWire() {
+  return `
+<div class="lwc-card" style="margin-bottom:12px">
+  <div class="lwc-card-header">
+    <span class="lwc-card-title">@wire Decorator Patterns</span>
+    <span class="wire-badge"><div class="wire-pulse"></div>reactive</span>
+  </div>
+  <div class="lwc-card-body" style="padding:0">
+    ${[
+      { label:'getRecord (LDS)', color:'#0176d3', desc:'Auto-refresh, FLS-aware, cache-first. Best for single record.', status:'Resolved', data:'Account.Name = "Acme Corp"' },
+      { label:'Apex @wire', color:'#7526e3', desc:'Cacheable Apex. Re-runs when reactive ($) props change.', status:'Resolved', data:'5 records returned' },
+      { label:'getObjectInfo', color:'#2e844a', desc:'Schema metadata, record types, field labels.', status:'Resolved', data:'23 fields, 2 record types' },
+      { label:'getPicklistValues', color:'#c47f17', desc:'Depends on recordTypeId from getObjectInfo.', status:'Pending', data:'Waiting on recordTypeId...' },
+    ].map((w,i) => `
+    <div style="display:flex;align-items:flex-start;gap:12px;padding:12px 14px;border-bottom:1px solid var(--slds-gray-1);cursor:pointer" onclick="addLog('wire','@wire(${w.label}) cache hit — returning stored result')">
+      <div style="width:3px;height:100%;min-height:44px;background:${w.color};border-radius:2px;flex-shrink:0;margin-top:2px"></div>
+      <div style="flex:1">
+        <div style="display:flex;align-items:center;gap:6px;margin-bottom:3px">
+          <code style="font-size:11px;font-weight:700;color:${w.color}">@wire(${w.label})</code>
+          <span class="badge ${w.status==='Resolved'?'badge-green':'badge-amber'}">${w.status}</span>
+        </div>
+        <div style="font-size:11px;color:var(--slds-gray-5);margin-bottom:4px">${w.desc}</div>
+        <code style="font-size:10.5px;color:var(--color-text-secondary)">${w.data}</code>
+      </div>
+    </div>`).join('')}
+  </div>
+</div>
+
+<div class="lwc-card">
+  <div class="lwc-card-header">
+    <span class="lwc-card-title">Reactive Property Demo</span>
+  </div>
+  <div class="lwc-card-body">
+    <div class="form-group">
+      <label class="form-label">Filter (reactive prop — triggers @wire re-fetch)</label>
+      <input class="form-input" placeholder="Type to filter..." oninput="simulateWireReactive(this.value)">
+    </div>
+    <div id="wire-reactive-status" style="font-size:11.5px;color:var(--slds-gray-5);padding:8px;background:var(--slds-gray-1);border-radius:4px">
+      @wire adapter idle — type to trigger re-fetch
+    </div>
+  </div>
+</div>
+<div id="event-log" class="event-log">
+  <div class="log-line"><span class="log-wire">[wire]</span><span>LDS cache populated from network</span></div>
+  <div class="log-line"><span class="log-wire">[wire]</span><span>@wire(getRecord) resolved from cache — 0ms</span></div>
+</div>`;
+}
+
+// ─── INTERACTIONS ───
+window.selectAccount = function(id, el) {
+  selectedAccountId = id;
+  const acc = accounts.find(a=>a.id===id);
+  addLog('event', `CustomEvent(accountselect) dispatched — detail.id: '${id}'`);
+  addLog('wire', `@wire re-evaluated — selectedId changed to '${id}'`);
+  addLog('render', `renderedCallback() — ${acc.name} detail panel updated`);
+  renderAll();
+};
+
+window.simulateRefresh = function() {
+  addLog('lifecycle', 'refreshApex() called — invalidating wire cache');
+  setTimeout(() => {
+    addLog('wire', `@wire(getOpportunities) network fetch — cache miss`);
+    addLog('render', `renderedCallback() — ${opportunities.length} rows re-rendered`);
+    updateLog();
+  }, 400);
+};
+
+window.simulateSave = function() {
+  addLog('event', 'lightning-record-form onsuccess fired');
+  addLog('wire', '@wire(getRecord) cache invalidated — refreshApex()');
+  addLog('render', 'renderedCallback() — toast notification shown');
+};
+
+window.fireLifecycle = function(hook) {
+  const chips = document.querySelectorAll('.concept-chip');
+  chips.forEach((c,i) => {
+    const hooks = ['constructor','connected','rendered','disconnected','error'];
+    c.classList.toggle('active', hooks[i]===hook);
+  });
+
+  const hookMap = {
+    constructor: { id:'lc-constructor', log:'constructor() — called once, before DOM. super() required. No this.template yet.', count:'lc-count-constructor' },
+    connected:   { id:'lc-connected',   log:'connectedCallback() — component inserted into DOM. Start subscriptions here.', count:'lc-count-connected' },
+    rendered:    { id:'lc-rendercallback', log:'renderedCallback() — DOM fully rendered. Safe to querySelector. Runs every re-render!', count:'lc-count-rendered' },
+    disconnected:{ id:'lc-disconnected', log:'disconnectedCallback() — component removed. Unsubscribe listeners!', count:'lc-count-disconnected' },
+    error:       { id:'lc-disconnected', log:'errorCallback(error, stack) — child component threw. Handle gracefully.', count:null },
+  };
+
+  const h = hookMap[hook];
+  document.querySelectorAll('.lc-step').forEach(el => el.classList.remove('fired'));
+  const target = document.getElementById(h.id);
+  if (target) target.classList.add('fired');
+
+  if (h.count) {
+    const el = document.getElementById(h.count);
+    if (el) el.textContent = (parseInt(el.textContent)||0)+1;
+  }
+  addLog('lifecycle', h.log);
+};
+
+window.remountComponent = function() {
+  addLog('lifecycle', 'disconnectedCallback() — component unmounted from DOM');
+  setTimeout(() => {
+    addLog('lifecycle', 'constructor() — new instance created');
+    setTimeout(() => {
+      addLog('lifecycle', 'connectedCallback() — re-inserted into DOM');
+      addLog('wire', '@wire adapters re-subscribed');
+      addLog('render', 'renderedCallback() — initial paint complete');
+      updateLog();
+    }, 200);
+    updateLog();
+  }, 300);
+};
+
+window.simulateWireReactive = function(val) {
+  const el = document.getElementById('wire-reactive-status');
+  if (!el) return;
+  if (!val) {
+    el.innerHTML = '@wire adapter idle — type to trigger re-fetch';
+    el.style.color = 'var(--slds-gray-5)';
+    return;
+  }
+  el.innerHTML = `<span style="color:var(--slds-purple)">@wire(getAccounts, { filter: <strong>'${val}'</strong> })</span> — fetching...`;
+  clearTimeout(window._wt);
+  window._wt = setTimeout(() => {
+    const count = accounts.filter(a=>a.name.toLowerCase().includes(val.toLowerCase())).length;
+    el.innerHTML = `<span style="color:var(--slds-green)">✓ @wire resolved — ${count} record${count!==1?'s':''} match '${val}'</span>`;
+    addLog('wire', `@wire(getAccounts, { filter: '${val}' }) → ${count} results`);
+  }, 500);
+};
+
+window.addLog = function(type, msg) {
+  const now = new Date();
+  const t = `${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}:${now.getSeconds().toString().padStart(2,'0')}`;
+  eventLog.unshift({ t, type, msg });
+  if (eventLog.length > 20) eventLog.pop();
+  const el = document.getElementById('event-log');
+  if (el) el.innerHTML = eventLog.slice(0,8).map(e => {
+    const cls = e.type === 'wire' ? 'log-wire' : e.type === 'event' ? 'log-event' : e.type === 'render' ? 'log-render' : 'log-lifecycle';
+    return `<div class="log-line"><span class="log-time">${e.t}</span><span class="${cls}">[${e.type}]</span><span>${e.msg}</span></div>`;
+  }).join('');
+};
+
+// ─── RENDERING ───
+function renderAll() {
+  const s = sections[currentSection];
+  const tabs = s.tabs;
+
+  // Code tabs
+  document.getElementById('code-tabs').innerHTML = tabs.map((t,i)=>`
+    <div class="code-tab ${i===currentCodeTab?'active':''}" onclick="switchCodeTab(${i})">${t}</div>
+  `).join('');
+  document.getElementById('code-display').innerHTML = `<pre>${codeContent[tabs[currentCodeTab]]||'<span class="cm">// No code found</span>'}</pre>`;
+
+  // Preview
+  const previewFns = { accounts:renderAccounts, opportunities:renderOpportunities, form:renderForm, lifecycle:renderLifecycle, wire:renderWire };
+  document.getElementById('preview-area').innerHTML = (previewFns[currentSection]||renderAccounts)();
+}
+
+window.switchCodeTab = function(i) {
+  currentCodeTab = i;
+  renderAll();
+};
+
+function renderFullCode() {
+  const s = sections[currentSection];
+  const tabs = s.tabs;
+  document.getElementById('full-code-display').innerHTML = tabs.map(t=>`
+    <div style="margin-bottom:24px">
+      <div style="color:#8892a8;font-size:11px;font-family:monospace;margin-bottom:8px;border-bottom:1px solid #2a2f3e;padding-bottom:6px">${t}</div>
+      <pre>${codeContent[t]||''}</pre>
+    </div>`).join('');
+}
+
+function renderTree() {
+  const trees = {
+    accounts: `
+      <div class="lwc-card">
+        <div class="lwc-card-header"><span class="lwc-card-title">Component Tree — accountList</span></div>
+        <div class="lwc-card-body" style="font-family:monospace;font-size:12px;line-height:2">
+          <div style="color:var(--slds-blue);font-weight:700">c-account-list <span class="badge badge-blue">@wire(getAccounts)</span></div>
+          <div style="padding-left:20px;border-left:1px dashed var(--slds-gray-3)">
+            <div style="color:var(--slds-purple)">↳ c-search-bar <span class="badge badge-purple">@track filter</span></div>
+            <div>↳ template for:each → account.data.records</div>
+            <div style="padding-left:20px;border-left:1px dashed var(--slds-gray-3)">
+              <div style="color:var(--slds-green)">↳ c-account-row ×${accounts.length} <span class="badge badge-green">@api record</span></div>
+              <div style="padding-left:20px;border-left:1px dashed var(--slds-gray-3)">
+                <div>↳ lightning-avatar</div>
+                <div>↳ lightning-badge [stage]</div>
+              </div>
+            </div>
+            <div style="color:var(--slds-coral)">↳ c-error-panel (if:true={accounts.error})</div>
+          </div>
+        </div>
+      </div>`,
+    opportunities: `<div class="lwc-card"><div class="lwc-card-header"><span class="lwc-card-title">Component Tree — opportunityTracker</span></div><div class="lwc-card-body" style="font-family:monospace;font-size:12px;line-height:2"><div style="color:var(--slds-green);font-weight:700">c-opportunity-tracker <span class="badge badge-green">@wire(getOpps)</span></div><div style="padding-left:20px;border-left:1px dashed var(--slds-gray-3)"><div>↳ lightning-card</div><div style="padding-left:20px"><div>↳ [slot="actions"] lightning-button-group</div><div>↳ template for:each → opportunities</div><div style="padding-left:20px;border-left:1px dashed var(--slds-gray-3)"><div style="color:var(--slds-blue)">↳ c-opp-row ×${opportunities.length} <span class="badge badge-blue">@api opportunity</span></div><div style="padding-left:20px"><div>↳ lightning-progress-bar [probability]</div><div>↳ lightning-badge [stage]</div></div></div></div></div></div></div>`,
+    form: `<div class="lwc-card"><div class="lwc-card-header"><span class="lwc-card-title">Component Tree — recordForm</span></div><div class="lwc-card-body" style="font-family:monospace;font-size:12px;line-height:2"><div style="color:var(--slds-purple);font-weight:700">c-record-form <span class="badge badge-purple">@api recordId</span></div><div style="padding-left:20px;border-left:1px dashed var(--slds-gray-3)"><div>↳ lightning-record-form <span class="badge badge-blue">LDS</span></div><div style="padding-left:20px;border-left:1px dashed var(--slds-gray-3)"><div>↳ lightning-input [Name]</div><div>↳ lightning-combobox [Industry]</div><div>↳ lightning-input [Revenue]</div><div>↳ lightning-button [Save]</div></div></div></div></div>`,
+    lifecycle: `<div class="lwc-card"><div class="lwc-card-header"><span class="lwc-card-title">Component Tree — lifecycleDemo</span></div><div class="lwc-card-body" style="font-family:monospace;font-size:12px;line-height:2"><div style="color:var(--slds-amber);font-weight:700">c-lifecycle-demo</div><div style="padding-left:20px;border-left:1px dashed var(--slds-gray-3)"><div>↳ c-hook-button ×5 <span class="badge badge-amber">@api hookName</span></div><div>↳ c-lifecycle-bar</div><div style="padding-left:20px"><div>↳ lc-step ×4 (constructor, connected, rendered, disconnected)</div></div></div></div></div>`,
+    wire: `<div class="lwc-card"><div class="lwc-card-header"><span class="lwc-card-title">Component Tree — wireAdapters</span></div><div class="lwc-card-body" style="font-family:monospace;font-size:12px;line-height:2"><div style="color:#c678dd;font-weight:700">c-wire-adapters</div><div style="padding-left:20px;border-left:1px dashed var(--slds-gray-3)"><div><span style="color:#c678dd">@wire</span>(getRecord) → { data, error }</div><div><span style="color:#c678dd">@wire</span>(myApexMethod, { param: '$filterValue' })</div><div style="margin-left:20px;color:var(--slds-gray-5)">→ function handler(result)</div><div><span style="color:#c678dd">@wire</span>(getObjectInfo, { objectApiName })</div><div><span style="color:#c678dd">@wire</span>(getPicklistValues, { recordTypeId, fieldApiName })</div><div style="margin-left:20px;color:var(--slds-amber)">⚠ Depends on objectInfo.data.defaultRecordTypeId</div></div></div></div>`,
+  };
+  document.getElementById('tree-display').innerHTML = trees[currentSection]||trees.accounts;
+}
+
+// ─── INIT ───
+renderAll();
+setTimeout(() => { addLog('lifecycle','connectedCallback() — c-account-list mounted'); updateLog(); }, 300);
+</script>
+</body>
+</html>
